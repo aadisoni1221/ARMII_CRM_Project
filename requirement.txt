@@ -1,0 +1,11 @@
+Django
+django-crispy-forms
+gunicorn
+psycopg2-binary
+python-decouple
+django-environ
+requests
+celery
+django-celery-results
+social-auth-app-django
+mysqlclient
