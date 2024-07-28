@@ -94,7 +94,7 @@ Feel free to contribute! 🛠️ If you want to add features, fix bugs, or impro
 
 ## Contact 📧
 
-If you have any questions, comments, or just want to chat, feel free to reach out via email at [adityasoni@example.com](mailto:aadisoni@gmail.com). You can also find me on GitHub [aadisoni1221](https://github.com/aadisoni1221).
+If you have any questions, comments, or just want to chat, feel free to reach out via email at [aadisoni1221@gmail.com](mailto:aadisoni1221@gmail.com). You can also find me on GitHub [aadisoni1221](https://github.com/aadisoni1221).
 
 ## License 📝
 
