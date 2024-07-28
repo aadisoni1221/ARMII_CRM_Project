@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Meeting</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f7fafc; /* Tailwind gray-100 */
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-wrapper {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4A5568; /* Tailwind gray-700 */
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #E2E8F0; /* Tailwind gray-300 */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #3182CE; /* Tailwind blue-500 */
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-actions button {
+            background-color: #3182CE; /* Tailwind blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            transition: background-color 0.2s;
+        }
+
+        .form-actions button:hover {
+            background-color: #2B6CB0; /* Tailwind blue-600 */
+        }
+
+        .back-button {
+            background-color: #E2E8F0; /* Tailwind gray-300 */
+            color: #4A5568; /* Tailwind gray-700 */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            border: 1px solid #CBD5E0; /* Tailwind gray-400 */
+            transition: background-color 0.2s;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background-color: #EDF2F7; /* Tailwind gray-200 */
+        }
+
+        /* Notification Styles */
+        .notification {
+            display: none;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            color: white;
+            background-color: #38A169; /* Tailwind green-600 */
+        }
+
+        .notification.show {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="bg-white p-8 rounded-lg shadow-lg w-full">
+                <!-- Heading -->
+                <div class="flex justify-center items-center mb-10">
+                    <h1 class="text-4xl font-bold">Edit Meeting</h1>
+                </div>
+                <!-- Notification -->
+                {% if messages %}
+                    <div id="notification-container">
+                        {% for message in messages %}
+                            <div class="notification show">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <!-- Form -->
+                <form id="edit-form" method="post" action="{% url 'update_edit_meeting' meeting.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="contact-name">Contact Name</label>
+                        <input type="text" id="contact-name" value="{{ contact.name }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Contact Phone</label>
+                        <input type="text" id="contact-phone" value="{{ contact.phone_number }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {% if field.name in editable_fields %}
+                                {{ field }}
+                            {% else %}
+                                <input type="{{ field.field.widget.input_type }}" value="{{ field.value }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                            {% endif %}
+                            {% if field.help_text %}
+                                <small class="text-gray-500">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <p class="text-red-500 text-sm">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    <div class="form-actions">
+                        <a href="{% url 'crm_meet' %}" class="back-button">Back</a>
+                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">Update Meeting</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

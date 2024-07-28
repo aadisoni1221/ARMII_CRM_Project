@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 1.5rem; /* Reduced padding */
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-input {
+            margin-bottom: 0.75rem; /* Reduced margin-bottom */
+            display: flex;
+            flex-direction: column;
+        }
+        .form-input label {
+            font-size: 0.875rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem; /* Reduced margin-bottom */
+            color: #374151;
+        }
+        .form-input input {
+            width: calc(100% - 2rem);
+            padding: 0.5rem; /* Reduced padding */
+            border: 1px solid #e2e8f0;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        .form-input input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .form-button {
+            background-color: #1a73e8;
+            color: #ffffff;
+            padding: 0.5rem; /* Reduced padding */
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        .form-button:hover {
+            background-color: #0e5a9c;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 0.75rem; /* Reduced margin-top */
+            color: #6b7280;
+        }
+        .login-link a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .info-message {
+            color: #3182ce; /* Blue color for informational messages */
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2 class="text-2xl font-bold mb-4 text-center">Register</h2>
+        <form method="post" id="registration-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-input" id="div_{{ field.name }}">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+            <button type="submit" class="form-button">Register</button>
+        </form>
+        <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById('registration-form');
+            const password1 = document.getElementById('id_password1');
+            const password2 = document.getElementById('id_password2');
+            const username = document.getElementById('id_username');
+            const email = document.getElementById('id_email');
+
+            function checkPasswordMatch() {
+                if (password1.value !== password2.value) {
+                    addErrorMessage(password2, "Passwords do not match.");
+                } else {
+                    removeErrorMessage(password2);
+                }
+            }
+
+            function checkPasswordStrength() {
+                if (password1.value.length < 8) {
+                    addErrorMessage(password1, "It must contain at least 8 characters.");
+                } else {
+                    removeErrorMessage(password1);
+                }
+            }
+
+            function addErrorMessage(field, message) {
+                let error = field.parentNode.querySelector('.info-message');
+                if (!error) {
+                    error = document.createElement('p');
+                    error.classList.add('error-message');
+                    error.classList.add('info-message');
+                    field.parentNode.appendChild(error);
+                }
+                error.textContent = message;
+            }
+
+            function removeErrorMessage(field) {
+                let error = field.parentNode.querySelector('.info-message');
+                if (error) {
+                    error.remove();
+                }
+            }
+
+            function validateField(field, url, message) {
+                field.addEventListener('input', function () {
+                    fetch(url + '?value=' + field.value)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                addErrorMessage(field, message);
+                            } else {
+                                removeErrorMessage(field);
+                            }
+                        });
+                });
+            }
+
+            validateField(username, '{% url "check_username" %}', 'A user with that username already exists.');
+            validateField(email, '{% url "check_email" %}', 'A user with that email already exists.');
+
+            password1.addEventListener('input', checkPasswordStrength);
+            password2.addEventListener('input', checkPasswordMatch);
+            form.addEventListener('submit', function (event) {
+                checkPasswordStrength();
+                checkPasswordMatch();
+                if (form.querySelector('.error-message')) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
