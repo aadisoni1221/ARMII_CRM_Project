@@ -10,10 +10,17 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f7fafc; /* Tailwind gray-100 */
+        }
+
+        .main-content {
+            display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background-color: #f7fafc; /* Tailwind gray-100 */
+            flex-grow: 1;
         }
 
         .container {
@@ -101,60 +108,72 @@
         .notification.show {
             display: block;
         }
+
+        footer {
+            background-color: #2D3748; /* Tailwind gray-800 */
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="container">
-        <div class="form-wrapper">
-            <div class="bg-white p-8 rounded-lg shadow-lg w-full">
-                <!-- Heading -->
-                <div class="flex justify-center items-center mb-10">
-                    <h1 class="text-4xl font-bold">Edit Meeting</h1>
-                </div>
-                <!-- Notification -->
-                {% if messages %}
-                    <div id="notification-container">
-                        {% for message in messages %}
-                            <div class="notification show">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
+<body>
+    <div class="main-content">
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="bg-white p-8 rounded-lg shadow-lg w-full">
+                    <!-- Heading -->
+                    <div class="flex justify-center items-center mb-10">
+                        <h1 class="text-4xl font-bold">Edit Meeting</h1>
                     </div>
-                {% endif %}
-                <!-- Form -->
-                <form id="edit-form" method="post" action="{% url 'update_edit_meeting' meeting.id %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="contact-name">Contact Name</label>
-                        <input type="text" id="contact-name" value="{{ contact.name }}" readonly class="w-full p-2 border border-gray-300 rounded">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-phone">Contact Phone</label>
-                        <input type="text" id="contact-phone" value="{{ contact.phone_number }}" readonly class="w-full p-2 border border-gray-300 rounded">
-                    </div>
-                    {% for field in form %}
-                        <div class="form-group">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {% if field.name in editable_fields %}
-                                {{ field }}
-                            {% else %}
-                                <input type="{{ field.field.widget.input_type }}" value="{{ field.value }}" readonly class="w-full p-2 border border-gray-300 rounded">
-                            {% endif %}
-                            {% if field.help_text %}
-                                <small class="text-gray-500">{{ field.help_text }}</small>
-                            {% endif %}
-                            {% for error in field.errors %}
-                                <p class="text-red-500 text-sm">{{ error }}</p>
+                    <!-- Notification -->
+                    {% if messages %}
+                        <div id="notification-container">
+                            {% for message in messages %}
+                                <div class="notification show">
+                                    {{ message }}
+                                </div>
                             {% endfor %}
                         </div>
-                    {% endfor %}
-                    <div class="form-actions">
-                        <a href="{% url 'crm_meet' %}" class="back-button">Back</a>
-                        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">Update Meeting</button>
-                    </div>
-                </form>
+                    {% endif %}
+                    <!-- Form -->
+                    <form id="edit-form" method="post" action="{% url 'update_edit_meeting' meeting.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="contact-name">Contact Name</label>
+                            <input type="text" id="contact-name" value="{{ contact.name }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Contact Phone</label>
+                            <input type="text" id="contact-phone" value="{{ contact.phone_number }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                        </div>
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {% if field.name in editable_fields %}
+                                    {{ field }}
+                                {% else %}
+                                    <input type="{{ field.field.widget.input_type }}" value="{{ field.value }}" readonly class="w-full p-2 border border-gray-300 rounded">
+                                {% endif %}
+                                {% if field.help_text %}
+                                    <small class="text-gray-500">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <p class="text-red-500 text-sm">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                        <div class="form-actions">
+                            <a href="{% url 'crm_meet' %}" class="back-button">Back</a>
+                            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded hover:bg-green-600 transition">Update Meeting</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        &copy; 2024 Aditya Soni. All Rights Reserved.
+    </footer>
 </body>
 </html>
