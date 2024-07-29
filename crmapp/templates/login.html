@@ -12,10 +12,12 @@
             font-family: 'Arial', sans-serif;
             background-color: #f0f4f7;
             display: flex;
+            flex-direction: column; /* Align items vertically */
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 0;
         }
         .form-container {
             background-color: #ffffff;
@@ -84,6 +86,13 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
+        }
+        footer {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            text-align: center;
+            padding: 1rem; /* Added padding for better spacing */
         }
     </style>
 </head>
@@ -191,5 +200,9 @@
             });
         });
     </script>
+    
+    <footer>
+        <p>&copy; 2024 Aditya Soni. All rights reserved.</p>
+    </footer>
 </body>
 </html>
